@@ -1,6 +1,6 @@
 export const environment = {
     http: {
-        host: '0.0.0.0',
+        host: 'backend',
         port: 3000
     },
     mongoose: {

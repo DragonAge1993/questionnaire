@@ -9,7 +9,6 @@ services:
     environment:
       - MONGO_INITDB_ROOT_USERNAME=root
       - MONGO_INITDB_ROOT_PASSWORD=examplequestionnaire
-      - MONGO_INITDB_DATABASE=questionnaire
     ports:
       - "27017:27017"
     volumes:
@@ -25,7 +24,7 @@ services:
       context: ./questionnaire-backend
     environment:
       - MONGO_URI=mongodb://root:examplequestionnaire@mongo:27017/questionnaire?authSource=admin
-      - HTTP_HOST=0.0.0.0
+      - HTTP_HOST=localhost
       - HTTP_PORT=3000
     ports:
       - "3000:3000"
