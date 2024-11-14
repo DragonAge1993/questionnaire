@@ -43,6 +43,16 @@ Backend использует MongoDb и предварительная иниц�
 7. Все компоненты WEB-приложения должны работать корректно.
 
 
+##DockerCompose
+1. Сборка без забора из cash
+```
+docker-compose -f docker-compose.yml build --no-cache
+```
+2. Запуск вновь собраных docker-image через docker-compose
+```
+docker-compose -f docker-compose.yml up -d
+```
+
 ## Guide:
 
 1. Базу данных ```questionnaire```  создать через mongo-express http://<IP_ADDRESS>:8081
