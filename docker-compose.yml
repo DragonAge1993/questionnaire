@@ -1,0 +1,78 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo:latest
+    hostname: mongo
+    container_name: questionnaire-mongo
+    restart: unless-stopped
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=examplequestionnaire
+      - MONGO_INITDB_DATABASE=questionnaire
+    ports:
+      - "27017:27017"
+    volumes:
+      - /root/testovoe/questionnaire/questionnaire/mongodb_data:/data/db
+    networks:
+      - questionnaire
+
+  backend:
+    container_name: questionnaire-backend
+    hostname: backend
+    restart: unless-stopped
+    build:
+      context: ./questionnaire-backend
+    environment:
+      - MONGO_URI=mongodb://root:examplequestionnaire@mongo:27017/questionnaire?authSource=admin
+      - HTTP_HOST=0.0.0.0
+      - HTTP_PORT=3000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongo
+    networks:
+      - questionnaire
+    stdin_open: true
+    tty: true
+
+  frontend:
+    container_name: questionnaire-frontend
+    build:
+      context: ./questionnaire-frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    volumes:
+      - /root/testovoe/questionnaire/questionnaire/questionnaire-frontend/nginx.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - questionnaire
+
+  mongo-express:
+    image: mongo-express
+    container_name: questionnaire-mongo-express
+    restart: unless-stopped
+    environment:
+      - ME_CONFIG_MONGODB_URL=mongodb://root:examplequestionnaire@mongo:27017/
+      - ME_CONFIG_BASICAUTH_USERNAME=webuser
+      - ME_CONFIG_BASICAUTH_PASSWORD=webuser
+      - ME_CONFIG_MONGODB_ENABLE_ADMIN=true
+      - ME_CONFIG_BASICAUTH=true
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=root
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=examplequestionnaire
+    ports:
+      - "8081:8081"
+    depends_on:
+      - mongo
+    networks:
+      - questionnaire
+
+volumes:
+  mongodb_data:
+
+networks:
+  questionnaire:
+    driver: bridge
+
